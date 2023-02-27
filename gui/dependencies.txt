@@ -1,0 +1,5 @@
+npm install tesseract.js
+npm install @grammarly/sdk
+npm i language-tool
+npm install antd
+npm install axios
