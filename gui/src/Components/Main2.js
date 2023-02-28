@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import Tesseract from "tesseract.js";
-import axios from 'axios'
+import axios from "axios";
 
 function Main() {
-
-  const [summaryArticle, setSummaryArticle] = useState("")
+  const [summaryArticle, setSummaryArticle] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [extractedText, setExtractedText] = useState("");
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [summaryLines, setSummaryLines] = useState(0);
 
-  const handleTextArea=(value)=>{
+  const handleTextArea = (value) => {
     setExtractedText(value);
-  }
+  };
   // handle image upload
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -29,33 +28,33 @@ function Main() {
   };
 
   const handleSummaryTextArea = (value) => {
-      setSummaryArticle(value);    
+    setSummaryArticle(value);
   };
   const handleLinesChange = (value) => {
-      setSummaryLines(value);    
+    setSummaryLines(value);
   };
 
-
-  
-  const sendExtractedText=()=>{
-    const endpoint="http://localhost:8000/api/"
-    console.log("Sending data")
-    const json_data={"title":"", "article":extractedText,"lines":summaryLines}
-    console.log(json_data)
-    axios.post(endpoint,json_data).then(
-      res=>{
-        
-        console.log("data fetched: ")
-        console.log(res)
-        setSummaryArticle(res.data.summary)
-      }
-    ).catch(
-      err=>{
-        console.log("Error occured")
-        console.log(err)
-      }
-    )
-  }
+  const sendExtractedText = () => {
+    const endpoint = "http://localhost:8000/api/";
+    console.log("Sending data");
+    const json_data = {
+      title: "",
+      article: extractedText,
+      lines: summaryLines,
+    };
+    console.log(json_data);
+    axios
+      .post(endpoint, json_data)
+      .then((res) => {
+        console.log("data fetched: ");
+        console.log(res);
+        setSummaryArticle(res.data.summary);
+      })
+      .catch((err) => {
+        console.log("Error occured");
+        console.log(err);
+      });
+  };
 
   return (
     <div className="container">
@@ -69,49 +68,71 @@ function Main() {
           <input
             className="input-section"
             type="file"
-            accept=".pdf .PNG .JPEG JPG"
+            // accept=".pdf .png .jpeg .jpg .tiff"
             onChange={handleImageUpload}
           />
         </div>
+        {imagePreviewUrl && (
+          <div>
+            <img src={imagePreviewUrl} style={{ maxWidth: "20%" }} />
+          </div>
+        )}
 
         <div>
           <button className="convert" onClick={handleImageExtraction}>
             Convert
           </button>
+
+          <div className="group-one">
+          <p className="btn-heading">Enter the number of lines of summary yuo want</p>
+            <input
+              className="input-lines"
+              type="number"
+              placeholder="Number of lines of summary"
+              value={summaryLines}
+              onChange={(e) => handleLinesChange(e.target.value)}
+            />
+
+            <button
+              className="submit-button"
+              type="submit"
+              onClick={() => sendExtractedText()}
+            >
+              Summarize
+            </button>
+          </div>
+
+          {/* <div>
+            <div className="lds-ring">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <p className="loading">Loading...</p>
+          </div> */}
         </div>
 
-        <div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            {imagePreviewUrl && (
-              <div style={{ flex: 1 }}>
-                <img src={imagePreviewUrl} style={{ maxWidth: "40%" }} />
-              </div>
-            )}
-            <div style={{ flex: 1 }}>
+        <div className="output-box">
+          <div>
+            <div className="output-one">
               <textarea
-                className="output-section"
+                placeholder=" Text Extracted or Paste any Article, Paragraph directly"
                 value={extractedText}
-                onChange={e => handleTextArea(e.target.value)} 
-                
+                onChange={(e) => handleTextArea(e.target.value)}
               ></textarea>
             </div>
           </div>
           {/* <label for="quantity">Quantity (between 1 and 5):</label> */}
-          <input
-            type="number"
-            placeholder="Number of lines of summary"
-            value={summaryLines}
-            onChange={e=>handleLinesChange(e.target.value)}
-          />
-              <button type="submit" onClick={()=>sendExtractedText()}>Submit</button>
-        </div>
 
-        <textarea
-                className="output-section"
-                value={summaryArticle}
-                onChange={e => handleSummaryTextArea(e.target.value)} 
-                
-              ></textarea>
+          <div className="output-two">
+            <textarea
+              placeholder="  Genrated Summary"
+              value={summaryArticle}
+              onChange={(e) => handleSummaryTextArea(e.target.value)}
+            ></textarea>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -8,9 +8,13 @@ from algorithm.finalalgo import Summarize
 def get_summary(request,*args,**kwargs):
    
     title=request.data.get('title')
-    article=request.data.get('article').replace('\n',' ')
-    lines=int(request.data.get('lines'))
-    
+    article=request.data.get('article')
+    lines=request.data.get('lines')
+
+    if lines is not None:
+        lines=int(lines)
+    if article is None:
+        return JsonResponse({"title":title,"article":article})
 
     summarizer=Summarize(title,article,lines)
     summary=summarizer.generate_summary()

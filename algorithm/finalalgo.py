@@ -62,7 +62,7 @@ contraction_mapping = {
 
 class Summarize:
     def __init__(self,title,article,lines):
-        self.article=article
+        self.article=article.replace('\n',' ')
         self.title=title
         self.corpus=""
         self.sentences=[]
